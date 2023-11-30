@@ -31,8 +31,10 @@ def get_user(user_id: int) -> Response:
 @app.post("/users")
 def create_user() -> Response:
     users = read_users()
-    new_id = max([u['id'] for u in users], default=0) + 1
     user = request.json
+    if 'name' not in user or 'lastname' not in user:
+        abort(400)
+    new_id = max([u['id'] for u in users], default=0) + 1
     user['id'] = new_id
     users.append(user)
     write_users(users)
@@ -54,6 +56,8 @@ def replace_user(user_id: int) -> Response:
     users = read_users()
     user = next((u for u in users if u['id'] == user_id), None)
     data = request.json
+    if 'name' not in data or 'lastname' not in data:
+        abort(400)
     if user:
         user.update(data)
     else:

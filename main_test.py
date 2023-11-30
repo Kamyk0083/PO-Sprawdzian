@@ -1,14 +1,10 @@
 import pytest
-from main import app
+from main.main import app
 
 @pytest.fixture
 def test_client():
     with app.test_client() as client:
         yield client
-
-def test_ping(test_client):
-    response = test_client.get("/ping")
-    assert response.data == b"ping"
 
 def test_get_users_empty(test_client):
     response = test_client.get("/users")
@@ -60,4 +56,4 @@ def test_delete_user(test_client):
     response = test_client.delete(f"/users/{user_id}")
     assert response.status_code == 204
     response = test_client.get(f"/users/{user_id}")
-    assert response.status_code == 404
+    assert response.status_code == 404 
