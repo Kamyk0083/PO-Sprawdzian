@@ -58,23 +58,21 @@ def replace_user(user_id: int) -> Response:
     data = request.json
     if 'name' not in data or 'lastname' not in data:
         abort(400)
-    if user:
-        user.update(data)
-    else:
-        data['id'] = user_id
-        users.append(data)
+    if user is None:
+        abort(400)
+    user.update(data)
     write_users(users)
     return '', 204
 
 @app.delete("/users/<int:user_id>")
 def delete_user(user_id: int) -> Response:
     users = read_users()
-    if any(u for u in users if u['id'] == user_id):
-        users = [u for u in users if u['id'] != user_id]
-        write_users(users)
-        return '', 204
-    else:
-        abort(400)
+    user = next((u for u in users if u['id'] == user_id), None)
+    if user is None:
+        abort(404)
+    users = [u for u in users if u['id'] != user_id]
+    write_users(users)
+    return '', 204
 
 if __name__ == '__main__':
     app.run(debug=True)
