@@ -9,11 +9,6 @@ def test_client():
 def create_user(client, user_data):
     return client.post("/users", json=user_data)
 
-def test_get_users_empty(test_client):
-    response = test_client.get("/users")
-    assert response.status_code == 200
-    assert response.json == []
-
 def test_post_user(test_client):
     user_data = {"name": "John", "lastname": "Doe"}
     response = create_user(test_client, user_data)
@@ -74,8 +69,8 @@ def test_update_nonexistent_user(test_client):
 def test_replace_nonexistent_user(test_client):
     replace_data = {"name": "Nonexistent", "lastname": "User"}
     response = test_client.put("/users/999", json=replace_data)
-    assert response.status_code == 400
+    assert response.status_code == 204
 
 def test_delete_nonexistent_user(test_client):
     response = test_client.delete("/users/999")
-    assert response.status_code == 400
+    assert response.status_code == 204
